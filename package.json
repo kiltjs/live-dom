@@ -1,0 +1,21 @@
+{
+  "name": "live-selector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/live-selector.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jstools/live-selector.git"
+  },
+  "author": "Jesús Germade <jesus@germade.es>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jstools/live-selector/issues"
+  },
+  "homepage": "https://github.com/jstools/live-selector#readme"
+}
