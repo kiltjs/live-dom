@@ -1,8 +1,8 @@
 {
   "name": "live-selector",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "",
-  "main": "lib/live-selector.js",
+  "main": "live-selector.js",
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
