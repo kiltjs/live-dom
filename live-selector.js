@@ -53,29 +53,29 @@ if( !Element.prototype.addEventListener ) {
   }
 }(this, function () {
 
-  var pageRunning = false,
-      each = [].forEach,
-      noop = function (v) { return v; };
+  var each = [].forEach,
+      noop = function (v) { return v; },
+      readyListeners = [],
+      initReady = function () {
+        var listeners = readyListeners;
+        readyListeners = undefined;
+        each.call(listeners, function (cb) { cb(); });
+        document.removeEventListener('DOMContentLoaded', initReady);
+        window.removeEventListener('load', initReady);
+      };
+
+  document.addEventListener('DOMContentLoaded', initReady);
+  window.addEventListener('load', initReady);
 
   function ready (callback) {
     if( callback instanceof Function ) {
-      if( pageRunning ) {
-        ready.listeners.push(callback);
+      if( readyListeners ) {
+        readyListeners.push(callback);
       } else {
         callback();
       }
     }
   }
-  ready.listeners = [];
-  ready.init = function () {
-    each.call(ready.listeners, function (cb) { cb(); });
-    delete ready.listeners;
-    pageRunning = true;
-    document.removeEventListener('DOMContentLoaded', ready.init);
-    window.removeEventListener('load', ready.init);
-  };
-  document.addEventListener('DOMContentLoaded', ready.init);
-  window.addEventListener('load', ready.init);
 
   // $live implementation
 
