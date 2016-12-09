@@ -29,7 +29,7 @@
   var each = [].forEach,
       noop = function (v) { return v; },
       readyListeners = [],
-      function runCB (cb) { cb(); }
+      runCB = function (cb) { cb(); },
       initReady = function () {
         if( !readyListeners ) return;
         var listeners = readyListeners;
@@ -90,7 +90,7 @@
       if( handler._collection ) {
         handler( elements );
       } else {
-        each.call(elements, function (el, i){
+        each.call(elements, function (el){
           handler.call(el, el);
         });
       }
@@ -106,7 +106,7 @@
             runSelector(pluginSelector);
           }
 
-          on(document.body, 'DOMSubtreeModified', function (event) {
+          on(document.body, 'DOMSubtreeModified', function () {
             for( var pluginSelector in handlers ) {
               runSelector(pluginSelector);
             }
