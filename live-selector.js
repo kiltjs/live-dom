@@ -1,42 +1,3 @@
-/*
- * jq-plugin (vanilla-js version)
- *
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Jesús Manuel Germade Castiñeiras <jesus@germade.es>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- */
-
-if( !Element.prototype.addEventListener ) {
-  if( Element.prototype.attachEvent ) {
-    Element.prototype.addEventListener = function (eventName, listener) {
-      return Element.prototype.attachEvent( 'on' + eventName, listener );
-    };
-    Element.prototype.removeEventListener = function (eventName, listener) {
-      return Element.prototype.detachEvent( 'on' + eventName, listener );
-    };
-  } else {
-    throw 'Browser not compatible with element events';
-  }
-}
 
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -52,6 +13,18 @@ if( !Element.prototype.addEventListener ) {
         root.$live = factory();
   }
 }(this, function () {
+
+  var on = Element.prototype.addEventListener : function (el, eventName, listener, useCapture) {
+    return el.addEventListener(eventName, listener, useCapture);
+  } : function (el, eventName, listener, useCapture) {
+    return el.attachEvent( 'on' + eventName, listener, useCapture );
+  };
+
+  var off = Element.prototype.removeEventListener : function (el, eventName, listener, useCapture) {
+    return el.removeEventListener(eventName, listener, useCapture);
+  } : function (el, eventName, listener, useCapture) {
+    return el.detachEvent( 'on' + eventName, listener, useCapture );
+  };
 
   var pageRunning = false,
       each = [].forEach,
@@ -71,11 +44,11 @@ if( !Element.prototype.addEventListener ) {
     each.call(ready.listeners, function (cb) { cb(); });
     delete ready.listeners;
     pageRunning = true;
-    document.removeEventListener('DOMContentLoaded', ready.init);
-    window.removeEventListener('load', ready.init);
+    off(document, 'DOMContentLoaded', ready.init);
+    off(window, 'load', ready.init);
   };
-  document.addEventListener('DOMContentLoaded', ready.init);
-  window.addEventListener('load', ready.init);
+  on(document, 'DOMContentLoaded', ready.init);
+  off(window, 'load', ready.init);
 
   // $live implementation
 
@@ -131,13 +104,13 @@ if( !Element.prototype.addEventListener ) {
             runSelector(pluginSelector);
           }
 
-          document.body.addEventListener('DOMSubtreeModified', function (event) {
+          on(document.body, 'DOMSubtreeModified', function (event) {
             for( var pluginSelector in handlers ) {
               runSelector(pluginSelector);
             }
           });
 
-          
+
           cb();
         });
       },
@@ -146,8 +119,6 @@ if( !Element.prototype.addEventListener ) {
         if( typeof selector !== 'string' || !(handler instanceof Function) ) {
           throw new Error('required selector (string) and handler (function)');
         }
-
-        // console.log('$live', selector, typeof handler, typeof collection, typeof cb );
 
         if( collection instanceof Function ) {
           cb = collection;
@@ -171,7 +142,6 @@ if( !Element.prototype.addEventListener ) {
 
         liveRunning = false;
         initLive(function () {
-          // console.log('liveListeners', liveListeners.length);
           each.call(liveListeners, function (_cb) {
             _cb();
           });
@@ -180,6 +150,8 @@ if( !Element.prototype.addEventListener ) {
       };
 
   $live.ready = ready;
+  $live.on = on;
+  $live.off = off;
 
   return $live;
 }));

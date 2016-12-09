@@ -1,0 +1,17 @@
+{
+  "name": "live-selector",
+  "description": "",
+  "main": "live-selector.js",
+  "authors": [
+    "Jesús Germade <jesus@germade.es>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jstools/live-selector",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
