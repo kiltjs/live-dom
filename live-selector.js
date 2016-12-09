@@ -26,29 +26,31 @@
     return el.detachEvent( 'on' + eventName, listener, useCapture );
   };
 
-  var pageRunning = false,
-      each = [].forEach,
-      noop = function (v) { return v; };
+  var each = [].forEach,
+      noop = function (v) { return v; },
+      readyListeners = [],
+      function runCB (cb) { cb(); }
+      initReady = function () {
+        if( !readyListeners ) return;
+        var listeners = readyListeners;
+        readyListeners = null;
+        listeners.forEach(runCB);
+        off(document, 'DOMContentLoaded', initReady);
+        off(window, 'load', initReady);
+      };
+
+  on(document, 'DOMContentLoaded', initReady);
+  on(window, 'load', initReady);
 
   function ready (callback) {
     if( callback instanceof Function ) {
-      if( pageRunning ) {
-        ready.listeners.push(callback);
+      if( readyListeners ) {
+        readyListeners.push(callback);
       } else {
         callback();
       }
     }
   }
-  ready.listeners = [];
-  ready.init = function () {
-    each.call(ready.listeners, function (cb) { cb(); });
-    delete ready.listeners;
-    pageRunning = true;
-    off(document, 'DOMContentLoaded', ready.init);
-    off(window, 'load', ready.init);
-  };
-  on(document, 'DOMContentLoaded', ready.init);
-  off(window, 'load', ready.init);
 
   // $live implementation
 
