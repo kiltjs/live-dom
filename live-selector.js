@@ -14,13 +14,13 @@
   }
 }(this, function () {
 
-  var on = Element.prototype.addEventListener : function (el, eventName, listener, useCapture) {
+  var on = Element.prototype.addEventListener ? function (el, eventName, listener, useCapture) {
     return el.addEventListener(eventName, listener, useCapture);
   } : function (el, eventName, listener, useCapture) {
     return el.attachEvent( 'on' + eventName, listener, useCapture );
   };
 
-  var off = Element.prototype.removeEventListener : function (el, eventName, listener, useCapture) {
+  var off = Element.prototype.removeEventListener ? function (el, eventName, listener, useCapture) {
     return el.removeEventListener(eventName, listener, useCapture);
   } : function (el, eventName, listener, useCapture) {
     return el.detachEvent( 'on' + eventName, listener, useCapture );
