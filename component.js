@@ -23,7 +23,8 @@
   var bindInit = window.customElements ? function (tag, fn) {
     (new Function('tag', 'fn', // customElements v1
       // dinamic class name and preventing use special keyword 'class' when not supported
-      'class ' + slugToClassCase(tag) + ' extends HTMLElement { super(); fn.call(this, this);' +
+      'class ' + slugToClassCase(tag) + ' extends HTMLElement {' +
+        '\nconstructor(){ super(); fn.call(this, this); }\n' +
       'window.customElements.define(\'tag\', XComponent); }'
     ))(tag, fn);
   } : ( document.registerElement ? function (tag, fn) { // customElements v0
