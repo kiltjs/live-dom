@@ -47,11 +47,12 @@
     bindInit(tag, function () {
       if( options.template ) this.innerHTML = options.template;
 
+      if( typeof options.init === 'function' ) options.init.call(this, this);
+      
       if( options.events ) {
         for( var key in options.events ) $live.on(this, key, options.events[key] );
       }
 
-      if( typeof options.init === 'function' ) options.init.call(this, this);
     });
   };
 
