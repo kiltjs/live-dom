@@ -21,12 +21,15 @@
   }
 
   var bindInit = window.customElements ? function (tag, fn) {
-    (new Function('tag', 'fn', // customElements v1
+    var classTag = slugToClassCase(tag);
+    new Function('tag', 'fn', // customElements v1
       // dinamic class name and preventing use special keyword 'class' when not supported
-      'class ' + slugToClassCase(tag) + ' extends HTMLElement {' +
-        '\nconstructor(){ super(); fn.call(this, this); }\n' +
-      'window.customElements.define(\'tag\', XComponent); }'
-    ))(tag, fn);
+      'class ' + classTag + ' extends HTMLElement {' +
+        '\nconstructor(){ super(); }\n' +
+        '\nconnectedCallback(){ fn.call(this, this); }\n' +
+      '}\n' +
+      'window.customElements.define(\'' + tag + '\', ' + classTag + ');'
+    )(tag, fn);
   } : ( document.registerElement ? function (tag, fn) { // customElements v0
     var elementProto = Object.create(HTMLElement.prototype);
     elementProto.createdCallback = function () { fn.call(this, this); };
@@ -48,7 +51,7 @@
       if( options.template ) this.innerHTML = options.template;
 
       if( typeof options.init === 'function' ) options.init.call(this, this);
-      
+
       if( options.events ) {
         for( var key in options.events ) $live.on(this, key, options.events[key] );
       }
