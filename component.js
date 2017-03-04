@@ -20,26 +20,33 @@
            });
   }
 
-  var bindInit = window.customElements ? function (tag, fn) {
+  var bindInit = window.customElements ? function (tag, fn, onDetach) {
     var classTag = slugToClassCase(tag);
-    new Function('tag', 'fn', // customElements v1
+    new Function('tag', 'fn', 'onDetach', // customElements v1
       // dinamic class name and preventing use special keyword 'class' when not supported
       'class ' + classTag + ' extends HTMLElement {' +
         '\nconstructor(){ super(); }\n' +
         '\nconnectedCallback(){ fn.call(this, this); }\n' +
+        ( ( onDetach instanceof Function ) ? '\ndisconnectedCallback(){ onDetach.call(this); }\n' : '' ) +
       '}\n' +
       'window.customElements.define(\'' + tag + '\', ' + classTag + ');'
     )(tag, fn);
-  } : ( document.registerElement ? function (tag, fn) { // customElements v0
+  } : ( document.registerElement ? function (tag, fn, onDetach) { // customElements v0
     var elementProto = Object.create(HTMLElement.prototype);
     elementProto.createdCallback = function () { fn.call(this, this); };
+    if( onDetach instanceof Function ) {
+      elementProto.detachedCallback = function () { onDetach.call(this, this); };
+    }
     try {
       document.registerElement(tag, { prototype: elementProto });
     } catch(err) {
       $live(tag, fn);
     }
-  } : function (tag, fn) { // live-selector as a fallback
-    $live(tag, fn);
+  } : function (tag, fn, onDetach) { // live-selector as a fallback
+    $live(tag, ( onDetach instanceof Function ) ? function (el) {
+      fn.call(el, el);
+      $live.on('detach', onDetach);
+    } : fn);
   } );
 
   $live.component = function (tag, options) {
@@ -50,13 +57,12 @@
     bindInit(tag, function () {
       if( options.template ) this.innerHTML = options.template;
 
-      if( typeof options.init === 'function' ) options.init.call(this, this);
+      if( typeof options.controller === 'function' ) options.controller.call(this, this);
 
       if( options.events ) {
         for( var key in options.events ) $live.on(this, key, options.events[key] );
       }
-
-    });
+    }, options.onDetach);
   };
 
   return $live.component;
