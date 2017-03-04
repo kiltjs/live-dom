@@ -1,6 +1,6 @@
 {
   "name": "live-dom",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "description": "",
   "main": "live-dom.js",
   "dependencies": {},
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/jstools/live-dom.git"
+    "url": "git+ssh://git@github.com/kiltjs/live-dom.git"
   },
   "author": "Jesús Germade <jesus@germade.es>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jstools/live-dom/issues"
+    "url": "https://github.com/kiltjs/live-dom/issues"
   },
-  "homepage": "https://github.com/jstools/live-dom#readme"
+  "homepage": "https://github.com/kiltjs/live-dom#readme"
 }

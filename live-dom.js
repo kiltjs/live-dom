@@ -21,6 +21,19 @@
     return el.detachEvent( 'on' + eventName, listener, useCapture );
   };
 
+  var triggerEvent = document.createEvent ? function (element, eventName, data) {
+    var event = document.createEvent('HTMLEvents');
+    event.data = data;
+    event.initEvent(eventName, true, true);
+    element.dispatchEvent(event);
+    return event;
+  } : function (element, eventName, data) {
+    var event = document.createEventObject();
+    event.data = data;
+    element.fireEvent('on' + eventName, event);
+    return event;
+  };
+
   var each = [].forEach,
       noop = function (v) { return v; },
       readyListeners = [],
@@ -93,6 +106,7 @@
   }
 
   var liveRunning = null,
+      useParent = true,
       initLive = function (cb) {
         ready(function () {
           // console.debug('$live:ready', typeof cb );
@@ -104,10 +118,16 @@
           if( window.MutationObserver ) {
             new MutationObserver(function(mutations) {
               mutations.forEach(function(mutation) {
+                var target = useParent ? mutation.target : document;
                 // console.log(mutation.target);
                 for( var pluginSelector in handlers ) {
-                  runSelector(pluginSelector, mutation.target);
+                  runSelector(pluginSelector, target);
                 }
+
+                [].forEach.call(mutation.removedNodes, function (node) {
+                  triggerEvent(node, 'detach');
+                });
+
               });
             }).observe(document.body, { childList: true, subtree: true });
           } else {
@@ -155,6 +175,10 @@
           liveRunning = true;
         });
       };
+
+  $live.useGlobal = function () {
+    useParent = false;
+  };
 
   $live.ready = ready;
   $live.on = on;
