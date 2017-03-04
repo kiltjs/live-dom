@@ -1,12 +1,12 @@
 {
-  "name": "live-selector",
+  "name": "live-dom",
   "description": "",
-  "main": "live-selector.js",
+  "main": "live-dom.js",
   "authors": [
     "Jesús Germade <jesus@germade.es>"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/jstools/live-selector",
+  "homepage": "https://github.com/jstools/live-dom",
   "ignore": [
     "**/.*",
     "node_modules",

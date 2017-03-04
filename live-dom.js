@@ -77,9 +77,9 @@
     return pluginsFilterCache[pluginSelector];
   }
 
-  function runSelector (pluginSelector) {
+  function runSelector (pluginSelector, parent) {
     var handler = handlers[pluginSelector],
-        elements = filter( document.querySelectorAll(pluginSelector), pluginSelectorFilter(pluginSelector) );
+        elements = filter( (parent || document).querySelectorAll(pluginSelector), pluginSelectorFilter(pluginSelector) );
 
     if( handler && elements.length ) {
       if( handler._collection ) {
@@ -101,12 +101,22 @@
             runSelector(pluginSelector);
           }
 
-          on(document.body, 'DOMSubtreeModified', function () {
-            for( var pluginSelector in handlers ) {
-              runSelector(pluginSelector);
-            }
-          });
-
+          if( window.MutationObserver ) {
+            new MutationObserver(function(mutations) {
+              mutations.forEach(function(mutation) {
+                // console.log(mutation.target);
+                for( var pluginSelector in handlers ) {
+                  runSelector(pluginSelector, mutation.target);
+                }
+              });
+            }).observe(document.body, { childList: true, subtree: true });
+          } else {
+            on(document.body, 'DOMSubtreeModified', function () {
+              for( var pluginSelector in handlers ) {
+                runSelector(pluginSelector);
+              }
+            });
+          }
 
           cb();
         });

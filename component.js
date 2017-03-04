@@ -3,10 +3,10 @@
 
 (function (root, factory) {
   if( typeof module === 'object' && module.exports ) {
-    module.exports = factory( require('./live-selector') );
+    module.exports = factory( require('./live-dom') );
   } else if (typeof define === 'function' && define.amd && typeof require === 'function') {
     require(['$live'], function ($live) {
-      factory($live);
+      return factory($live);
     });
   } else {
     factory(root.$live);
@@ -58,5 +58,7 @@
 
     });
   };
+
+  return $live.component;
 
 });

@@ -1,21 +1,21 @@
 {
-  "name": "live-selector",
-  "version": "1.4.3",
+  "name": "live-dom",
+  "version": "1.4.4",
   "description": "",
-  "main": "live-selector.js",
+  "main": "live-dom.js",
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "test": "eslint live-selector.js"
+    "test": "eslint live-dom.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/jstools/live-selector.git"
+    "url": "git+ssh://git@github.com/jstools/live-dom.git"
   },
   "author": "Jesús Germade <jesus@germade.es>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jstools/live-selector/issues"
+    "url": "https://github.com/jstools/live-dom/issues"
   },
-  "homepage": "https://github.com/jstools/live-selector#readme"
+  "homepage": "https://github.com/jstools/live-dom#readme"
 }

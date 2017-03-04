@@ -2,19 +2,14 @@
 // widgets
 
 (function (root, factory) {
-    if (typeof define === 'function' && define.amd && typeof require === 'function') {
-        // AMD. Register as an anonymous module.
-        require(['$live'], function ($live) {
-          factory($live);
-        });
-    } else if (typeof module === 'object' && module.exports) {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = factory(require('./live-selector'));
-    } else {
-        // Browser globals (root is window)
-        factory(root.$live);
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory( require('./live-dom') );
+  } else if (typeof define === 'function' && define.amd && typeof require === 'function') {
+    require(['$live'], function ($live) {
+      return factory($live);
+    });
+  } else {
+    factory(root.$live);
   }
 })(this, function ($live) {
 
@@ -39,5 +34,7 @@
       [].forEach.call(document.querySelectorAll('[data-widget="' + widgetName + '"]'), handler);
     }
   };
+
+  return $live.widget;
 
 });
