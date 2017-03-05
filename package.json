@@ -1,7 +1,7 @@
 {
   "name": "live-dom",
-  "version": "1.5.0",
-  "description": "",
+  "version": "1.5.1",
+  "description": "DOM auto discover library, allows define behaviors for given css selectors indepedently of when nodes are attached to document.",
   "main": "live-dom.js",
   "dependencies": {},
   "devDependencies": {},
