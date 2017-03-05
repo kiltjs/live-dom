@@ -30,20 +30,22 @@
         ( ( onDetach instanceof Function ) ? '\ndisconnectedCallback(){ onDetach.call(this); }\n' : '' ) +
       '}\n' +
       'window.customElements.define(\'' + tag + '\', ' + classTag + ');'
-    )(tag, fn);
+    )(tag, fn, onDetach);
   } : ( document.registerElement ? function (tag, fn, onDetach) { // customElements v0
     var elementProto = Object.create(HTMLElement.prototype);
     elementProto.createdCallback = function () { fn.call(this, this); };
-    if( onDetach instanceof Function ) {
+    if( onDetach instanceof Function )
       elementProto.detachedCallback = function () { onDetach.call(this, this); };
-    }
     try {
       document.registerElement(tag, { prototype: elementProto });
     } catch(err) {
-      $live(tag, fn);
+      $live(tag, onDetach instanceof Function ? function (el) {
+        fn.call(el, el);
+        $live.on('detach', onDetach);
+      } : fn );
     }
   } : function (tag, fn, onDetach) { // live-selector as a fallback
-    $live(tag, ( onDetach instanceof Function ) ? function (el) {
+    $live(tag, onDetach instanceof Function ? function (el) {
       fn.call(el, el);
       $live.on('detach', onDetach);
     } : fn);
