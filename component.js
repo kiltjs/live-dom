@@ -41,13 +41,13 @@
     } catch(err) {
       $live(tag, onDetach instanceof Function ? function (el) {
         fn.call(el, el);
-        $live.on('detach', onDetach);
+        $live.on(el, 'detached', onDetach);
       } : fn );
     }
   } : function (tag, fn, onDetach) { // live-selector as a fallback
     $live(tag, onDetach instanceof Function ? function (el) {
       fn.call(el, el);
-      $live.on('detach', onDetach);
+      $live.on(el, 'detached', onDetach);
     } : fn);
   } );
 

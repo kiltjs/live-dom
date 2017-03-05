@@ -125,7 +125,7 @@
                 }
 
                 [].forEach.call(mutation.removedNodes, function (node) {
-                  triggerEvent(node, 'detach');
+                  triggerEvent(node, 'detached');
                 });
 
               });
