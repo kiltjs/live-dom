@@ -21,17 +21,15 @@
     return el.detachEvent( 'on' + eventName, listener, useCapture );
   };
 
-  var triggerEvent = document.createEvent ? function (element, eventName, data, noPropagation) {
+  var triggerEvent = document.createEvent ? function (element, eventName, data) {
     var event = document.createEvent('HTMLEvents');
     event.data = data;
     event.initEvent(eventName, true, true);
-    if( (data === true || !noPropagation) && event.stopPropagation ) event.stopPropagation();
     element.dispatchEvent(event);
     return event;
-  } : function (element, eventName, data, noPropagation) {
+  } : function (element, eventName, data) {
     var event = document.createEventObject();
     event.data = data;
-    if( (data === true || !noPropagation) && event.stopPropagation ) event.stopPropagation();
     element.fireEvent('on' + eventName, event);
     return event;
   };
@@ -116,13 +114,12 @@
             new MutationObserver(function(mutations) {
               mutations.forEach(function(mutation) {
                 var target = useParent ? mutation.target : document;
-                // console.log(mutation.target);
                 for( var pluginSelector in handlers ) {
                   runSelector(pluginSelector, target);
                 }
 
                 [].forEach.call(mutation.removedNodes, function (node) {
-                  triggerEvent(node, 'detached', true);
+                  triggerEvent(node, 'detached');
                 });
 
               });
