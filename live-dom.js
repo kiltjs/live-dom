@@ -109,11 +109,6 @@
       useParent = true,
       initLive = function (cb) {
         ready(function () {
-          // console.debug('$live:ready', typeof cb );
-
-          for( var pluginSelector in handlers ) {
-            runSelector(pluginSelector);
-          }
 
           if( window.MutationObserver ) {
             new MutationObserver(function(mutations) {
@@ -136,6 +131,10 @@
                 runSelector(pluginSelector);
               }
             });
+          }
+
+          for( var pluginSelector in handlers ) {
+            runSelector(pluginSelector);
           }
 
           cb();
