@@ -21,20 +21,6 @@
     return el.detachEvent( 'on' + eventName, listener, useCapture );
   };
 
-  function debounce (fn, duration) {
-    duration = duration || 80;
-    var sec = 0;
-
-    return function () {
-      var thisArg = this, args = arguments, n = ++sec;
-
-      setTimeout(function () {
-        if( n !== sec ) return;
-        fn.apply(thisArg, args);
-      }, duration);
-    };
-  }
-
   var triggerEvent = document.createEvent ? function (element, eventName, data) {
     var event = document.createEvent('HTMLEvents');
     event.data = data;
@@ -120,23 +106,17 @@
   }
 
   var liveRunning = null,
-      // useParent = true,
-      runSelectorsDebounced = debounce(function () {
-        for( var pluginSelector in handlers ) {
-          runSelector(pluginSelector);
-        }
-      }),
+      useParent = true,
       initLive = function (cb) {
         ready(function () {
 
           if( window.MutationObserver ) {
             new MutationObserver(function(mutations) {
               mutations.forEach(function(mutation) {
-                // var target = useParent ? mutation.target : document;
-                // for( var pluginSelector in handlers ) {
-                //   runSelector(pluginSelector, target);
-                // }
-                runSelectorsDebounced();
+                var target = useParent ? mutation.target : document;
+                for( var pluginSelector in handlers ) {
+                  runSelector(pluginSelector, target);
+                }
 
                 [].forEach.call(mutation.removedNodes, function (node) {
                   triggerEvent(node, 'detached');
@@ -146,10 +126,9 @@
             }).observe(document.body, { childList: true, subtree: true });
           } else {
             on(document.body, 'DOMSubtreeModified', function () {
-              // for( var pluginSelector in handlers ) {
-              //   runSelector(pluginSelector);
-              // }
-              runSelectorsDebounced();
+              for( var pluginSelector in handlers ) {
+                runSelector(pluginSelector);
+              }
             });
           }
 
@@ -195,9 +174,9 @@
         });
       };
 
-  // $live.useGlobal = function () {
-  //   useParent = false;
-  // };
+  $live.useGlobal = function () {
+    useParent = false;
+  };
 
   $live.ready = ready;
   $live.on = on;
