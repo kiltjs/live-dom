@@ -34,7 +34,8 @@
     return event;
   };
 
-  var each = [].forEach,
+  var each = Array.prototype.forEach,
+      filter = Array.prototype.filter,
       noop = function (v) { return v; },
       readyListeners = [],
       runCB = function (cb) { cb(); },
@@ -65,18 +66,6 @@
   var handlers = {},
       pluginsFilterCache = {};
 
-  function filter (list, iteratee) {
-    var result = [], n = 0;
-
-    for( var i = 0, len = list.length; i < len ; i++ ) {
-      if( iteratee(list[i]) ) {
-        result[n++] = list[i];
-      }
-    }
-
-    return result;
-  }
-
   function pluginSelectorFilter (pluginSelector) {
     if( !pluginsFilterCache[pluginSelector] ) {
       pluginsFilterCache[pluginSelector] = function (el) {
@@ -92,7 +81,7 @@
 
   function runSelector (pluginSelector, parent) {
     var handler = handlers[pluginSelector],
-        elements = filter( (parent || document).querySelectorAll(pluginSelector), pluginSelectorFilter(pluginSelector) );
+        elements = filter.call( (parent || document).querySelectorAll(pluginSelector), pluginSelectorFilter(pluginSelector) );
 
     if( handler && elements.length ) {
       if( handler._collection ) {
@@ -181,6 +170,35 @@
   $live.ready = ready;
   $live.on = on;
   $live.off = off;
+
+  $live.byName = function (selector, getName) {
+
+    var selectorRunning = null,
+        handlers = {};
+
+    return function (name, handler) {
+      handlers[name] = handler;
+
+      if( selectorRunning === null ) {
+
+        selectorRunning = false;
+        $live(selector, function (node) {
+          var name = getName(node);
+          if( handlers[name] ) handlers[name].call(node, node);
+        }, function () {
+          selectorRunning = true;
+        });
+
+      } else if( selectorRunning ) {
+        each.call(filter.call(document.querySelectorAll(selector), function () {
+          return getName(this) === name;
+        }), handler);
+      }
+    };
+
+  };
+
+  $live.form = $live.byName('form[name]', function () { return this.name; });
 
   return $live;
 }));
