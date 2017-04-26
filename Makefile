@@ -27,4 +27,4 @@ increase.version:
 	git push origin $(shell git rev-parse --abbrev-ref HEAD)
 	npm publish
 
-publish: test increase.version github.release
+release: test increase.version github.release
