@@ -1,7 +1,7 @@
 
 # live-dom
 
-[![npm](https://img.shields.io/npm/v/live-dom.svg?maxAge=2592000)](https://www.npmjs.com/package/live-dom) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kiltjs/nitro/master/LICENSE)
+[![](https://img.shields.io/npm/v/live-dom.svg)](https://www.npmjs.com/package/live-dom) [![](https://img.shields.io/bower/v/live-dom.svg)](http://bower.io/search/?q=live-dom) [![Build Status](https://travis-ci.org/kiltjs/live-dom.svg?branch=master)](https://travis-ci.org/kiltjs/live-dom)
 
 DOM auto discover library, allows define behaviors for given css selectors indepedently of when nodes are attached to document.
 
