@@ -171,7 +171,7 @@
   $live.on = on;
   $live.off = off;
 
-  $live.name = function (selector, getName) {
+  $live.byName = function (selector, getName) {
 
     var selectorRunning = null,
         handlers = {};
@@ -198,7 +198,7 @@
 
   };
 
-  $live.form = $live.name('form[name]', function () { return this.name; });
+  $live.form = $live.byName('form[name]', function () { return this.name; });
 
   return $live;
 }));
