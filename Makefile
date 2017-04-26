@@ -1,6 +1,8 @@
 
 pkg_name := live-dom
 
+.PHONY: test publish
+
 install:
 	npm install
 
@@ -19,8 +21,9 @@ github.release:
 	@echo ${RELEASE_URL}
 	@true
 
-publish: test
+increase.version:
 	npm version patch
 	git push origin $(shell git rev-parse --abbrev-ref HEAD)
 	npm publish
-	github.release
+
+publish: test increase.version github.release
