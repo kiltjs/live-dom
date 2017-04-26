@@ -1,5 +1,6 @@
 
 pkg_name := live-dom
+git_branch := $(shell git rev-parse --abbrev-ref HEAD)
 
 .PHONY: test publish
 
