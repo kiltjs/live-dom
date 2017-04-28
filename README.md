@@ -3,7 +3,8 @@
 
 DOM auto-discover library. Initialize matched nodes automatically.
 
-[![npm](https://img.shields.io/npm/v/live-dom.svg)](https://www.npmjs.com/package/live-dom) [![bower](https://img.shields.io/bower/v/live-dom.svg)](http://bower.io/search/?q=live-dom)
+[![npm](https://img.shields.io/npm/v/live-dom.svg)](https://www.npmjs.com/package/live-dom)
+[![bower](https://img.shields.io/bower/v/live-dom.svg)](http://bower.io/search/?q=live-dom)
 [![Build Status](https://travis-ci.org/kiltjs/live-dom.svg?branch=master)](https://travis-ci.org/kiltjs/live-dom)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
