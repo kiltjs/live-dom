@@ -1,13 +1,9 @@
 
 (function (root, factory) {
-  if (typeof module === 'object' && module.exports) {
-    module.exports = factory();
-  } else if (typeof define === 'function' && define.amd) {
-    define([], factory);
-  } else {
-    root.$live = factory();
-  }
-}(this, function () {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else if (typeof define === 'function' && define.amd) define([], factory);
+  else root.$live = factory();
+})(this, function () {
 
   var on = Element.prototype.addEventListener ? function (el, eventName, listener, useCapture) {
     return el.addEventListener(eventName, listener, useCapture);
@@ -201,4 +197,4 @@
   $live.form = $live.byName('form[name]', function () { return this.name; });
 
   return $live;
-}));
+});
