@@ -16,9 +16,8 @@ karma:
 test: install eslint karma
 
 npm.publish:
-	# git push origin $(git_branch)
 	npm version patch
-	git push --tags
+	git push origin $(git_branch) && git push --tags
 	npm publish
 	@echo "published ${PKG_VERSION}"
 
