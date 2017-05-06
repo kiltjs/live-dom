@@ -57,9 +57,13 @@
     if( typeof options !== 'object' || options === null ) return;
 
     bindInit(tag, function () {
-      if( options.template ) this.innerHTML = options.template;
+      var _this = this;
+      if( options.template ) _this.innerHTML = options.template;
 
-      if( typeof options.controller === 'function' ) options.controller.call(this, this);
+      if( typeof options.controller === 'function' ) options.controller.call(_this, _this);
+      else if( options.controller instanceof Array && typeof define === 'function' && define.amd && typeof require === 'function' ) {
+        require( options.controller.slice(0, options.controller.length - 1), options.controller.slice(-1) );
+      }
 
       if( options.events ) {
         for( var key in options.events ) $live.on(this, key, options.events[key] );
