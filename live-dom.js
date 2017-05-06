@@ -1,9 +1,9 @@
 
-(function (root, factory) {
+(function (factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
-  else if (typeof define === 'function' && define.amd) define([], factory);
-  else root.$live = factory();
-})(this, function () {
+  else if ( typeof window.define === 'function' && window.define.amd ) define([], factory);
+  else window.$live = factory();
+})(function () {
 
   var on = Element.prototype.addEventListener ? function (el, eventName, listener, useCapture) {
     return el.addEventListener(eventName, listener, useCapture);

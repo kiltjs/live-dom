@@ -1,17 +1,22 @@
 
 // components
 
-(function (root, factory) {
+(function (factory) {
+
+  function supportsAmd () {
+    return typeof window.define === 'function' && window.define.amd && typeof window.require === 'function';
+  }
+
   if( typeof module === 'object' && module.exports ) {
-    module.exports = factory( require('./live-dom') );
-  } else if (typeof define === 'function' && define.amd && typeof require === 'function') {
+    module.exports = factory( require('./live-dom'), supportsAmd );
+  } else if ( supportsAmd() ) {
     require(['$live'], function ($live) {
-      return factory($live);
+      return factory($live, supportsAmd);
     });
   } else {
-    factory(root.$live);
+    factory(window.$live, supportsAmd);
   }
-})(this, function ($live) {
+})(function ($live, supportsAmd) {
 
   function slugToClassCase (tag) {
     return tag[0].toUpperCase() +
@@ -57,12 +62,17 @@
     if( typeof options !== 'object' || options === null ) return;
 
     bindInit(tag, function () {
-      var _this = this;
+      var _this = this, ctrl = options.controller;
       if( options.template ) _this.innerHTML = options.template;
 
-      if( typeof options.controller === 'function' ) options.controller.call(_this, _this);
-      else if( options.controller instanceof Array && typeof define === 'function' && define.amd && typeof require === 'function' ) {
-        require( options.controller.slice(0, options.controller.length - 1), options.controller.slice(-1) );
+
+      if( typeof ctrl === 'function' ) ctrl.call(_this, _this);
+      else if( ctrl instanceof Array && supportsAmd() ) {
+        (function (dependencies, ctrl) {
+          window.require(dependencies, function () {
+            ctrl.apply(_this, arguments);
+          });
+        })( ctrl.slice(0, ctrl.length - 1), ctrl[ctrl.length - 1] );
       }
 
       if( options.events ) {
