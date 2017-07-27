@@ -179,7 +179,7 @@
 
         selectorRunning = false;
         $live(selector, function (node) {
-          var name = getValue(node);
+          var name = getValue.call(node, node);
           if( handlers[name] ) handlers[name].call(node, node);
         }, function () {
           selectorRunning = true;
@@ -187,7 +187,7 @@
 
       } else if( selectorRunning ) {
         each.call(filter.call(document.querySelectorAll(selector), function (node) {
-          return getValue(node) === name;
+          return getValue.call(node, node) === name;
         }), handler);
       }
     };
