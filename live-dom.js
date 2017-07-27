@@ -167,7 +167,7 @@
   $live.on = on;
   $live.off = off;
 
-  $live.byName = function (selector, getName) {
+  $live.byValue = function (selector, getValue) {
 
     var selectorRunning = null,
         handlers = {};
@@ -179,22 +179,22 @@
 
         selectorRunning = false;
         $live(selector, function (node) {
-          var name = getName(node);
+          var name = getValue(node);
           if( handlers[name] ) handlers[name].call(node, node);
         }, function () {
           selectorRunning = true;
         });
 
       } else if( selectorRunning ) {
-        each.call(filter.call(document.querySelectorAll(selector), function () {
-          return getName(this) === name;
+        each.call(filter.call(document.querySelectorAll(selector), function (node) {
+          return getValue(node) === name;
         }), handler);
       }
     };
 
   };
 
-  $live.form = $live.byName('form[name]', function () { return this.name; });
+  $live.form = $live.byValue('form[name]', function () { return this.name; });
 
   return $live;
 });
