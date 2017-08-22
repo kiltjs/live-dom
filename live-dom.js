@@ -97,7 +97,7 @@
     });
 
     function _live (selector, listener_fn) {
-      if( selector instanceof Function ) listeners_all.push(selector);
+      if( selector instanceof Function ) return listeners_all.push(selector);
 
       if( typeof selector !== 'string' ) throw new Error('selector should be a String');
       if( !(listener_fn instanceof Function) ) throw new Error('listener should be a Function');
@@ -113,7 +113,7 @@
     }
 
     _live.off = function (selector, listener) {
-      if( selector instanceof Function ) _remove_item(listeners_all, selector);
+      if( selector instanceof Function ) return _remove_item(listeners_all, selector);
 
       if( typeof selector !== 'string' ) throw new Error('selector should be a String');
       if( !(listener instanceof Function) ) throw new Error('handler should be a Function');
