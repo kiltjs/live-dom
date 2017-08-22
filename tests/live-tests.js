@@ -9,9 +9,8 @@ describe('live selector', function () {
 
       $live('ul', function (ul) {
         uls++;
-
+        console.log('$live.ul', uls );
         ul.innerHTML = 'ul-' + uls;
-
       });
 
       setTimeout(function () {
