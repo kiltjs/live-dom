@@ -34,7 +34,7 @@
       if( el.__live__ && el.__live__[listener.id] ) return;
       el.__live__ = el.__live__ || {};
       el.__live__[listener.id] = true;
-      listener.fn(el);
+      listener.fn.call(el, el);
     }
 
     function runSelector (selector) {
