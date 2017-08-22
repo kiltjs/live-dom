@@ -122,7 +122,8 @@
     };
 
     _live.byValue = function (selector, getValue) {
-      var value_listeners = {};
+      var value_listeners = {},
+          value_live_ready = false;
 
       return function (name, listener_fn) {
         var listener = {
@@ -135,19 +136,22 @@
         value_listeners[name] = value_listeners[name] || [];
         value_listeners[name].push(listener);
 
-        if( dom_is_ready ) {
+        if( dom_is_ready && value_live_ready ) {
           each.call( filter.call(document.querySelectorAll(selector), listener.filter), function (el) {
             runListener(el, listener);
           });
-        } else {
-          _live(selector, function (el) {
-            for( var name in value_listeners ) {
-              value_listeners[name].forEach(function (listener) {
-                if( listener.filter(el) ) runListener(el, listener);
-              });
-            }
-          });
         }
+
+        if( value_live_ready ) return;
+
+        value_live_ready = true;
+        _live(selector, function (el) {
+          for( var name in value_listeners ) {
+            value_listeners[name].forEach(function (listener) {
+              if( listener.filter(el) ) runListener(el, listener);
+            });
+          }
+        });
       };
     };
 
