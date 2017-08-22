@@ -122,14 +122,32 @@
     };
 
     _live.byValue = function (selector, getValue) {
-      var handlers = {};
+      var value_listeners = {};
 
-      return function (name, handler) {
-        handlers[name] = handler;
+      return function (name, listener_fn) {
+        var listener = {
+          id: '_' + ++num_listeners, fn: listener_fn,
+          filter: function (node) {
+            return getValue.call(node, node) === name;
+          }
+        };
 
-        if( dom_is_ready ) each.call( filter.call(document.querySelectorAll(selector), function (node) {
-          return getValue.call(node, node) === name;
-        }), handler);
+        value_listeners[name] = value_listeners[name] || [];
+        value_listeners[name].push(listener);
+
+        if( dom_is_ready ) {
+          each.call( filter.call(document.querySelectorAll(selector), listener.filter), function (el) {
+            runListener(el, listener);
+          });
+        } else {
+          _live(selector, function (el) {
+            for( var name in value_listeners ) {
+              value_listeners[name].forEach(function (listener) {
+                if( listener.filter(el) ) runListener(el, listener);
+              });
+            }
+          });
+        }
       };
     };
 
