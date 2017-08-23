@@ -72,6 +72,8 @@
     }
 
     onReady(function () {
+      if( root === document ) root = document.body;
+
       var mutations_supported = 'MutationObserver' in window;
       if( mutations_supported ) {
         try{
@@ -158,7 +160,7 @@
     return _live;
   }
 
-  var $live = _getLive(document.body);
+  var $live = _getLive(document);
   $live.root = _getLive;
   $live.form = $live.byValue('form[name]', function () { return this.name; });
 
