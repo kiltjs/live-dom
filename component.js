@@ -76,7 +76,7 @@
       }
 
       if( options.events ) {
-        for( var key in options.events ) $live.on(this, key, options.events[key] );
+        for( var key in options.events ) this.addEventListener(key, options.events[key]);
       }
     }, options.onDetach);
   };
