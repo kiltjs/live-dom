@@ -157,6 +157,8 @@
       };
     };
 
+    _live.ready = onReady;
+
     return _live;
   }
 
