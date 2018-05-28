@@ -160,4 +160,12 @@ var $live = _getLive(document);
 $live.root = _getLive;
 $live.form = $live.byValue('form[name]', function () { return this.name; });
 
+$live.onAttributeChanged = function (el, onAttributeChanged) {
+  new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      onAttributeChanged(mutation.attributeName, mutation.oldValue, el.getAttribute(mutation.attributeName) );
+    });
+  }).observe(el, { attributes: true, attributeOldValue: true });
+};
+
 module.exports = $live;

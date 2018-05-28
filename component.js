@@ -13,20 +13,12 @@ function slugToClassCase (tag) {
          });
 }
 
-function _initAttributeChanged (el, onAttributeChanged) {
-  new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      onAttributeChanged(mutation.attributeName, mutation.oldValue, el.getAttribute(mutation.attributeName) );
-    });
-  }).observe(el, { attributes: true, attributeOldValue: true });
-}
-
 function _liveFallback (tag, fn, onDetach, onAttributeChanged) { // live-selector as a fallback
   // console.log('_liveFallback', tag, fn, onDetach, onAttributeChanged);
   $live(tag, (onDetach instanceof Function || onAttributeChanged instanceof Function) ? function (el) {
     fn.call(el, el);
     if( onDetach instanceof Function ) $live.on(el, 'detached', onDetach);
-    if( onAttributeChanged instanceof Function ) _initAttributeChanged(el, onAttributeChanged);
+    if( onAttributeChanged instanceof Function ) $live.onAttributeChanged(el, onAttributeChanged);
   } : fn);
 }
 
@@ -42,11 +34,11 @@ var bindInit = window.customElements ? function (tag, fn, onDetach, onAttributeC
       // ( ( onAttributeChanged instanceof Function ) ? '\nattributeChangedCallback(){ onAttributeChanged.apply(this, arguments); }\n' : '' ) +
     '}\n' +
     'window.customElements.define(\'' + tag + '\', ' + classTag + ');'
-  )(tag, fn, onDetach, onAttributeChanged, _initAttributeChanged);
+  )(tag, fn, onDetach, onAttributeChanged, $live.onAttributeChanged);
 } : ( document.registerElement ? function (tag, fn, onDetach, onAttributeChanged) { // customElements v0
   var elementProto = Object.create(HTMLElement.prototype);
   elementProto.createdCallback = function () {
-    if( onAttributeChanged instanceof Function ) _initAttributeChanged(this, onAttributeChanged);
+    if( onAttributeChanged instanceof Function ) $live.onAttributeChanged(this, onAttributeChanged);
     fn.call(this, this);
   };
   if( onDetach instanceof Function )
