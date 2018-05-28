@@ -1,4 +1,5 @@
-/* global describe, it, assert, $live */
+/* global describe, it, assert, live */
+
 describe('live selector', function () {
 
     it('uls', function(done) {
@@ -7,7 +8,7 @@ describe('live selector', function () {
 
       document.body.innerHTML = '';
 
-      $live('ul', function (ul) {
+      live('ul', function (ul) {
         uls++;
         ul.innerHTML = 'ul-' + uls;
       });

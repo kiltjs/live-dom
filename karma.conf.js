@@ -13,7 +13,8 @@ module.exports = function(config) {
       'karma-story-reporter'
     ],
     files: [
-      'live-dom.js',
+      '.tmp/live-dom.js',
+      '.tmp/component.js',
       'tests/{,**/}*.js'
     ],
     browsers: [ 'Chrome', 'Firefox' ],

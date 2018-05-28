@@ -13,46 +13,59 @@ function slugToClassCase (tag) {
          });
 }
 
-var bindInit = window.customElements ? function (tag, fn, onDetach) {
+function _initAttributeChanged (el, onAttributeChanged) {
+  new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      onAttributeChanged(mutation.attributeName, mutation.oldValue, el.getAttribute(mutation.attributeName) );
+    });
+  }).observe(el, { attributes: true, attributeOldValue: true });
+}
+
+function _liveFallback (tag, fn, onDetach, onAttributeChanged) { // live-selector as a fallback
+  // console.log('_liveFallback', tag, fn, onDetach, onAttributeChanged);
+  $live(tag, (onDetach instanceof Function || onAttributeChanged instanceof Function) ? function (el) {
+    fn.call(el, el);
+    if( onDetach instanceof Function ) $live.on(el, 'detached', onDetach);
+    if( onAttributeChanged instanceof Function ) _initAttributeChanged(el, onAttributeChanged);
+  } : fn);
+}
+
+var bindInit = window.customElements ? function (tag, fn, onDetach, onAttributeChanged) {
   var classTag = slugToClassCase(tag);
-  new Function('tag', 'fn', 'onDetach', // customElements v1
+  new Function('tag', 'fn', 'onDetach', 'onAttributeChanged', '_initAttributeChanged', // customElements v1
     // dinamic class name and preventing use special keyword 'class' when not supported
     'class ' + classTag + ' extends HTMLElement {' +
       '\nconstructor(){ super(); }\n' +
-      '\nconnectedCallback(){ fn.call(this, this); }\n' +
+      // '\nconnectedCallback(){ fn.call(this, this); }\n' +
+      '\nconnectedCallback(){ if( onAttributeChanged instanceof Function ) _initAttributeChanged(this, onAttributeChanged); fn.call(this, this); }\n' +
       ( ( onDetach instanceof Function ) ? '\ndisconnectedCallback(){ onDetach.call(this); }\n' : '' ) +
+      // ( ( onAttributeChanged instanceof Function ) ? '\nattributeChangedCallback(){ onAttributeChanged.apply(this, arguments); }\n' : '' ) +
     '}\n' +
     'window.customElements.define(\'' + tag + '\', ' + classTag + ');'
-  )(tag, fn, onDetach);
-} : ( document.registerElement ? function (tag, fn, onDetach) { // customElements v0
+  )(tag, fn, onDetach, onAttributeChanged, _initAttributeChanged);
+} : ( document.registerElement ? function (tag, fn, onDetach, onAttributeChanged) { // customElements v0
   var elementProto = Object.create(HTMLElement.prototype);
-  elementProto.createdCallback = function () { fn.call(this, this); };
+  elementProto.createdCallback = function () {
+    if( onAttributeChanged instanceof Function ) _initAttributeChanged(this, onAttributeChanged);
+    fn.call(this, this);
+  };
   if( onDetach instanceof Function )
     elementProto.detachedCallback = function () { onDetach.call(this, this); };
   try {
     document.registerElement(tag, { prototype: elementProto });
   } catch(err) {
-    $live(tag, onDetach instanceof Function ? function (el) {
-      fn.call(el, el);
-      $live.on(el, 'detached', onDetach);
-    } : fn );
+    _liveFallback(tag, fn, onDetach, onAttributeChanged);
   }
-} : function (tag, fn, onDetach) { // live-selector as a fallback
-  $live(tag, onDetach instanceof Function ? function (el) {
-    fn.call(el, el);
-    $live.on(el, 'detached', onDetach);
-  } : fn);
-} );
+} : _liveFallback );
 
 $live.component = function (tag, options) {
   if( typeof options === 'function' ) { bindInit(tag, options); return; }
-  if( typeof options === 'string' ) options = { template: options };
-  if( typeof options !== 'object' || options === null ) return;
+  else if( typeof options === 'string' ) options = { template: options };
+  else if( typeof options !== 'object' || options === null ) return;
 
   bindInit(tag, function () {
     var _this = this, ctrl = options.controller;
     if( options.template ) _this.innerHTML = options.template;
-
 
     if( typeof ctrl === 'function' ) ctrl.call(_this, _this);
     else if( ctrl instanceof Array && supportsAmd() ) {
@@ -66,7 +79,7 @@ $live.component = function (tag, options) {
     if( options.events ) {
       for( var key in options.events ) this.addEventListener(key, options.events[key]);
     }
-  }, options.onDetach);
+  }, options.onDetach, options.onAttributeChanged );
 };
 
 module.exports = $live.component;
