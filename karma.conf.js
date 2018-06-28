@@ -17,8 +17,17 @@ module.exports = function(config) {
       '.tmp/component.js',
       'tests/{,**/}*.js'
     ],
-    browsers: [ 'Chrome', 'Firefox' ],
+    browsers: [ 'ChromeHeadless', 'FirefoxHeadless' ],
     customLaunchers: {
+      // from: https://github.com/GoogleChrome/puppeteer/issues/1925
+      ChromeHeadlessCustom: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+      },
+      Chrome_headless: {
+        base: 'Chrome',
+        flags: ['--headless', '--no-sandbox'],
+      },
       Chrome_no_sandbox: {
         base: 'Chrome',
         flags: ['--no-sandbox']
@@ -27,6 +36,10 @@ module.exports = function(config) {
     singleRun: true,
     reporters: ['story']
   };
+
+  if(process.env.DOCKER_CI){
+    configuration.browsers = [ 'ChromeHeadlessCustom', 'FirefoxHeadless' ];
+  }
 
   if(process.env.TRAVIS){
     configuration.browsers = [ 'Chrome_no_sandbox', 'Firefox' ];
