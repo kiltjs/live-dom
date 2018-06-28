@@ -3,6 +3,7 @@
 
 DOM auto-discover library. Initialize matched nodes automatically.
 
+[![ᴋɪʟᴛ ᴊs](https://jesus.germade.es/assets/images/badge-kiltjs.svg)](https://github.com/kiltjs)
 [![npm](https://img.shields.io/npm/v/live-dom.svg)](https://www.npmjs.com/package/live-dom)
 [![bower](https://img.shields.io/bower/v/live-dom.svg)](http://bower.io/search/?q=live-dom)
 [![Build Status](https://travis-ci.org/kiltjs/live-dom.svg?branch=master)](https://travis-ci.org/kiltjs/live-dom)
