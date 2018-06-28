@@ -1,5 +1,5 @@
 
-FROM node:8.0-alpine AS builder
+FROM nitrojs/node-karma:0.5.0 AS builder
 
 WORKDIR /app
 
